@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanta · پنل کانفیگ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body {
+            background: #0b0b0b;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .panel {
+            max-width: 520px;
+            width: 100%;
+            background: #141414;
+            border-radius: 2rem;
+            padding: 2rem 1.5rem 1.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px #2a2a2a;
+            color: #eaeaea;
+        }
+        .brand {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a2a;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .brand h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            background: linear-gradient(135deg, #b388ff, #8c9eff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .creator-badge {
+            background: #1f1f1f;
+            padding: 0.3rem 1rem 0.3rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #aaa;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .creator-badge a {
+            color: #b388ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .creator-badge a:hover { text-decoration: underline; }
+        .page { display: block; }
+        .page.hidden { display: none; }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            background: #1e1e1e;
+            border: 1px solid #2e2e2e;
+            border-radius: 14px;
+            color: #f0f0f0;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        input:focus { border-color: #7c8cff; box-shadow: 0 0 0 3px rgba(124,140,255,0.15); }
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 1.2rem;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid #3a3a3a;
+        }
+        .btn-primary {
+            background: #5c6eff;
+            border-color: #5c6eff;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(92,110,255,0.2);
+        }
+        .btn-primary:hover { background: #4b5de0; transform: scale(0.98); }
+        .btn-danger { background: #b33; border-color: #b33; color: #fff; }
+        .btn-danger:hover { background: #a22; }
+        .btn-outline { background: transparent; border: 1px solid #444; }
+        .btn-outline:hover { background: #222; }
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            width: auto;
+            margin-top: 0;
+            font-size: 0.85rem;
+        }
+        .config-list {
+            margin-top: 1rem;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-left: 4px;
+        }
+        .config-item {
+            background: #1b1b1b;
+            border-radius: 16px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+            border: 1px solid #2b2b2b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .config-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.85rem;
+        }
+        .config-info strong { color: #cfd8ff; }
+        .config-info .link-text {
+            font-size: 0.7rem;
+            color: #6a8cff;
+            word-break: break-all;
+            cursor: pointer;
+        }
+        .config-info .link-text:hover { text-decoration: underline; }
+        .config-actions { display: flex; gap: 8px; align-items: center; }
+        .badge {
+            background: #2a2a2a;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            color: #9e9e9e;
+            border: 1px solid #3a3a3a;
+        }
+        .menu-row {
+            display: flex;
+            gap: 8px;
+            margin: 1.2rem 0 0.5rem;
+            flex-wrap: wrap;
+        }
+        .menu-row .btn { flex: 1; margin: 0; min-width: 70px; }
+        .mt-2 { margin-top: 1.2rem; }
+        .text-muted { color: #777; font-size: 0.8rem; }
+        .hidden { display: none !important; }
+        .fixed-creator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 0.5rem 1.2rem 0.5rem 1rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            color: #aaa;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 999;
+        }
+        .fixed-creator a { color: #b388ff; text-decoration: none; font-weight: 600; }
+        .fixed-creator a:hover { text-decoration: underline; }
+        @media (max-width: 480px) {
+            .panel { padding: 1.5rem 1rem; }
+            .brand h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-creator">
+        <i class="fas fa-code"></i>
+        <span>ساخته‌شده توسط</span>
+        <a href="https://t.me/kiarash1792" target="_blank">@kiarash1792</a>
+    </div>
+
+    <div class="panel" id="app">
+        <div class="brand">
+            <h1><i class="fas fa-shield-alt" style="margin-left: 8px;"></i>Vanta</h1>
+            <div class="creator-badge">
+                <i class="fas fa-user-astronaut"></i>
+                <span>سازنده:</span>
+                <a href="https://t.me/kiarash1792" target="_blank">@kiarash1792</a>
+            </div>
+        </div>
+
+        <!-- صفحه لاگین -->
+        <div id="loginPage" class="page">
+            <div style="margin: 1.8rem 0 0.2rem; text-align:center;">
+                <i class="fas fa-lock" style="font-size: 2.5rem; color: #5c6eff; opacity: 0.6;"></i>
+                <p style="color:#888; margin-top: 6px;">رمز را وارد کنید</p>
+            </div>
+            <input type="password" id="passwordInput" placeholder="••••••••" />
+            <button class="btn btn-primary" id="loginBtn">
+                <i class="fas fa-arrow-left"></i> ورود
+            </button>
+            <button class="btn btn-outline" id="defaultPassBtn" style="margin-top: 0.6rem;">
+                <i class="fas fa-key"></i> رمز پیش‌فرض (vanta)
+            </button>
+        </div>
+
+        <!-- صفحه اصلی -->
+        <div id="mainPage" class="page hidden">
+            <div class="menu-row">
+                <button class="btn btn-primary" id="menuNewConfig"><i class="fas fa-plus-circle"></i> ساخت</button>
+                <button class="btn btn-outline" id="menuListConfig"><i class="fas fa-list-ul"></i> لیست</button>
+                <button class="btn btn-outline" id="menuSettings"><i class="fas fa-cog"></i> تنظیمات</button>
+            </div>
+
+            <!-- ساخت کانفیگ -->
+            <div id="sectionNewConfig">
+                <label>نام کاربر</label>
+                <input type="text" id="userName" placeholder="مثلاً Kiarash" value="کاربر" />
+                <label>حجم (گیگابایت)</label>
+                <input type="number" id="volumeGb" value="10" min="1" />
+                <label>مدت زمان (روز)</label>
+                <input type="number" id="durationDays" value="30" min="1" />
+                <button class="btn btn-primary" id="generateConfigBtn">
+                    <i class="fas fa-wand-magic-sparkles"></i> ساخت کانفیگ
+                </button>
+            </div>
+
+            <!-- لیست کانفیگ‌ها -->
+            <div id="sectionListConfig" class="hidden">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="color:#aaa;"><i class="fas fa-database"></i> کانفیگ‌ها</span>
+                    <span class="badge" id="configCount">۰</span>
+                </div>
+                <div class="config-list" id="configListContainer">
+                    <p class="text-muted" style="text-align:center; padding:1rem 0;">در حال بارگذاری...</p>
+                </div>
+            </div>
+
+            <!-- تنظیمات -->
+            <div id="sectionSettings" class="hidden">
+                <label>رمز جدید</label>
+                <input type="password" id="newPasswordInput" placeholder="رمز جدید را وارد کن" />
+                <button class="btn btn-primary" id="changePasswordBtn">
+                    <i class="fas fa-save"></i> تغییر رمز
+                </button>
+                <button class="btn btn-outline" id="themeToggleBtn" style="margin-top:1.2rem;">
+                    <i class="fas fa-moon"></i> تم سیاه (فعال)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== کد جاوااسکریپت ====================
+        let configs = [];
+        let isLoggedIn = false;
+
+        // المنت‌ها
+        const loginPage = document.getElementById('loginPage');
+        const mainPage = document.getElementById('mainPage');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const defaultPassBtn = document.getElementById('defaultPassBtn');
+
+        const sectionNew = document.getElementById('sectionNewConfig');
+        const sectionList = document.getElementById('sectionListConfig');
+        const sectionSettings = document.getElementById('sectionSettings');
+
+        const menuNew = document.getElementById('menuNewConfig');
+        const menuList = document.getElementById('menuListConfig');
+        const menuSettings = document.getElementById('menuSettings');
+
+        const userNameInput = document.getElementById('userName');
+        const volumeInput = document.getElementById('volumeGb');
+        const durationInput = document.getElementById('durationDays');
+        const generateBtn = document.getElementById('generateConfigBtn');
+
+        const configListContainer = document.getElementById('configListContainer');
+        const configCountSpan = document.getElementById('configCount');
+
+        const newPasswordInput = document.getElementById('newPasswordInput');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+
+        // ========== توابع ==========
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        function showSection(sectionId) {
+            sectionNew.classList.add('hidden');
+            sectionList.classList.add('hidden');
+            sectionSettings.classList.add('hidden');
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        async function fetchConfigs() {
+            try {
+                const res = await fetch('/api/configs');
+                configs = await res.json();
+                renderConfigList();
+            } catch (err) {
+                console.error('خطا:', err);
+                configListContainer.innerHTML = '<p class="text-muted" style="text-align:center; padding:1rem 0;">خطا در دریافت کانفیگ‌ها</p>';
+            }
+        }
+
+        function renderConfigList() {
+            if (configs.length === 0) {
+                configListContainer.innerHTML = `<p class="text-muted" style="text-align:center; padding:1rem 0;">هیچ کانفیگی وجود ندارد</p>`;
+                configCountSpan.textContent = '۰';
+                return;
+            }
+            let html = '';
+            configs.forEach((cfg) => {
+                html += `
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div><strong>${cfg.user_name}</strong> · ${cfg.volume} GB · ${cfg.days} روز</div>
+                            <div style="font-size:0.7rem; color:#6a8cff; cursor:pointer;" onclick="copyLink('${cfg.link}')">
+                                <i class="fas fa-link"></i> کپی لینک
+                            </div>
+                            <div style="font-size:0.75rem; color:#888;">
+                                <i class="fas fa-hourglass-half"></i> مصرف: ${cfg.used || 0} GB
+                            </div>
+                        </div>
+                        <div class="config-actions">
+                            <button class="btn btn-sm btn-danger" onclick="deleteConfig(${cfg.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            configListContainer.innerHTML = html;
+            configCountSpan.textContent = configs.length;
+        }
+
+        window.copyLink = function(link) {
+            navigator.clipboard.writeText(link).then(() => {
+                alert('✅ لینک کانفیگ کپی شد!');
+            }).catch(() => {
+                prompt('لینک را کپی کنید:', link);
+            });
+        };
+
+        window.deleteConfig = async function(id) {
+            if (!confirm('این کانفیگ حذف شود؟')) return;
+            try {
+                await fetch(`/api/configs/${id}`, { method: 'DELETE' });
+                configs = configs.filter(c => c.id !== id);
+                renderConfigList();
+            } catch (err) {
+                alert('خطا در حذف');
+            }
+        };
+
+        async function generateConfig() {
+            const user = userNameInput.value.trim() || 'کاربر';
+            const volume = parseFloat(volumeInput.value) || 10;
+            const days = parseInt(durationInput.value) || 30;
+
+            if (volume < 1) { alert('حجم باید حداقل ۱ باشد'); return; }
+            if (days < 1) { alert('مدت باید حداقل ۱ باشد'); return; }
+
+            try {
+                const res = await fetch('/api/configs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user, volume, days })
+                });
+                const newConfig = await res.json();
+                configs.unshift(newConfig);
+                renderConfigList();
+                alert(`✅ کانفیگ ساخته شد!\nلینک: ${newConfig.link}`);
+                showSection('sectionListConfig');
+            } catch (err) {
+                alert('❌ خطا در ساخت کانفیگ');
+            }
+        }
+
+        async function login(password) {
+            try {
+                const res = await fetch('/api/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const result = await res.json();
+                if (result.valid) {
+                    isLoggedIn = true;
+                    showPage('mainPage');
+                    showSection('sectionNewConfig');
+                    await fetchConfigs();
+                    passwordInput.value = '';
+                } else {
+                    alert('❌ رمز اشتباه است!');
+                }
+            } catch (err) {
+                alert('❌ خطا در ارتباط با سرور');
+            }
+        }
+
+        async function changePassword(newPass) {
+            if (!newPass || newPass.length < 4) {
+                alert('رمز باید حداقل ۴ کاراکتر باشد.');
+                return;
+            }
+            try {
+                await fetch('/api/password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newPassword: newPass })
+                });
+                alert('✅ رمز با موفقیت تغییر کرد!');
+                newPasswordInput.value = '';
+            } catch (err) {
+                alert('❌ خطا در تغییر رمز');
+            }
+        }
+
+        // ========== رویدادها ==========
+        loginBtn.addEventListener('click', () => login(passwordInput.value));
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login(passwordInput.value);
+        });
+        defaultPassBtn.addEventListener('click', () => {
+            passwordInput.value = 'vanta';
+            login('vanta');
+        });
+
+        menuNew.addEventListener('click', () => showSection('sectionNewConfig'));
+        menuList.addEventListener('click', () => {
+            showSection('sectionListConfig');
+            fetchConfigs();
+        });
+        menuSettings.addEventListener('click', () => showSection('sectionSettings'));
+
+        generateBtn.addEventListener('click', generateConfig);
+
+        changePasswordBtn.addEventListener('click', () => {
+            changePassword(newPasswordInput.value);
+        });
+
+        document.getElementById('themeToggleBtn').addEventListener('click', () => {
+            alert('تم همیشه سیاه است (حالت دارک).');
+        });
+
+        // ========== شروع ==========
+        showPage('loginPage');
+        console.log('🚀 پنل Vanta آماده است');
+        console.log('👤 سازنده: @kiarash1792');
+    </script>
+
+</body>
+</html>
